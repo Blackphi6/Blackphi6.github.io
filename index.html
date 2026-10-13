@@ -1,108 +1,211 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>みんなの辞書（2chトリップ式）</title>
-  <style>
-    body { font-family: sans-serif; margin: 2em; }
-    .entry { border-bottom: 1px solid #ccc; margin-bottom: 1em; padding-bottom: 1em; }
-    .trip { color: #888; font-size: 0.9em; }
-    .like { color: #e44; cursor: pointer; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blackphi6 | My Page</title>
+<meta name="description" content="Blackphi6のマイページ。macOSアプリ・Chrome拡張機能など「あったらいいな」ツールを個人開発・公開しています。">
+<style>
+  :root {
+    --bg: #0f1115;
+    --bg-card: #171a21;
+    --border: #2a2e38;
+    --text: #e8e9ec;
+    --text-dim: #9ba1ac;
+    --accent: #6ee7b7;
+    --accent-dim: #3d9970;
+    --link: #7dd3fc;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 3em 1.25em 4em;
+  }
+  header.hero {
+    text-align: center;
+    margin-bottom: 2.5em;
+  }
+  .avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    margin-bottom: 1em;
+  }
+  h1 {
+    font-size: 1.6em;
+    margin: 0 0 0.3em;
+    letter-spacing: 0.02em;
+  }
+  .tagline {
+    color: var(--text-dim);
+    font-size: 0.95em;
+    margin: 0;
+  }
+  nav.links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6em;
+    margin-top: 1.4em;
+  }
+  nav.links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0.5em 1em;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.88em;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  nav.links a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  section {
+    margin-bottom: 2.6em;
+  }
+  h2 {
+    font-size: 1.05em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5em;
+    margin-bottom: 1.2em;
+  }
+  p.about {
+    color: var(--text);
+    font-size: 1em;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1em;
+  }
+  .card {
+    display: block;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1em 1.2em;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .card:hover {
+    border-color: var(--accent-dim);
+    transform: translateY(-2px);
+  }
+  .card .name {
+    font-weight: 600;
+    font-size: 0.98em;
+    margin-bottom: 0.4em;
+    word-break: break-word;
+  }
+  .card .desc {
+    color: var(--text-dim);
+    font-size: 0.85em;
+  }
+  footer {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.8em;
+    margin-top: 3em;
+  }
+  footer a { color: var(--link); }
+</style>
 </head>
 <body>
-  <h1>みんなの辞書（2chトリップ式）</h1>
-  <form id="postForm">
-    <input type="text" id="word" placeholder="単語（例: 赤穂浪士）" required>
-    <input type="text" id="name" placeholder="名前#パスワード（任意）">
-    <br>
-    <textarea id="meaning" placeholder="意味・説明" required rows="3" cols="40"></textarea>
-    <br>
-    <button type="submit">投稿</button>
-  </form>
-  <hr>
-  <div id="entries"></div>
+  <div class="wrap">
+    <header class="hero">
+      <img class="avatar" src="https://avatars.githubusercontent.com/u/60109085?v=4" alt="Blackphi6のアバター">
+      <h1>Blackphi6</h1>
+      <p class="tagline">「こういうのあったらいいな」を作ってGitHubで公開しています。<br>macOS向けツールやChrome拡張機能、動画・字幕関連の小物が中心です。</p>
+      <nav class="links">
+        <a href="https://github.com/Blackphi6" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://note.com/blackphi6" target="_blank" rel="noopener">note</a>
+        <a href="https://kaopita.booth.pm/" target="_blank" rel="noopener">BOOTH</a>
+        <a href="https://exchange.adobe.com/publisher/cc/b47c4044-7747-4193-ac2d-2eebe2000e60/blackphi6?page=1" target="_blank" rel="noopener">Adobe Exchange</a>
+      </nav>
+    </header>
 
-  <script>
-    // 簡易トリップ生成（2ch方式の簡易版: cryptの代わりにSHA-1を利用）
-    async function makeTrip(key) {
-      if (!key) return '';
-      const encoder = new TextEncoder();
-      const data = encoder.encode(key);
-      const hashBuffer = await crypto.subtle.digest('SHA-1', data);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-      return '◆' + hashHex.slice(0, 10);
-    }
+    <section>
+      <h2>About</h2>
+      <p class="about">
+        フリーランスで、動画編集や日常のちょっとした不便を解決する小さなツールを自作して公開しています。
+        「これ、あったら便利なのに」と思ったものをmacOSアプリやChrome拡張機能として形にするのが好きです。
+        公開したツールはすべてGitHubで管理し、無料で誰でも使えるようにしています。
+      </p>
+    </section>
 
-    // 投稿保存・取得（localStorage利用）
-    function getEntries() {
-      return JSON.parse(localStorage.getItem('entries') || '[]');
-    }
-    function saveEntries(entries) {
-      localStorage.setItem('entries', JSON.stringify(entries));
-    }
+    <section>
+      <h2>Works</h2>
+      <div class="grid">
+        <a class="card" href="https://github.com/Blackphi6/SkillDrop" target="_blank" rel="noopener">
+          <div class="name">SkillDrop</div>
+          <div class="desc">GitHubのAgent SkillをCursor / Claude Code / Codexに一括導入するmacOSアプリ</div>
+        </a>
+        <a class="card" href="https://github.com/Blackphi6/MCPDrop" target="_blank" rel="noopener">
+          <div class="name">MCPDrop</div>
+          <div class="desc">GitHubやnpmのMCPをCursor / Claude Code / Codexに一括導入するmacOSアプリ</div>
+        </a>
+        <a class="card" href="https://github.com/Blackphi6/vestige" target="_blank" rel="noopener">
+          <div class="name">Vestige</div>
+          <div class="desc">macOS用アプリ完全アンインストーラー（Apple Siliconネイティブ）</div>
+        </a>
+        <a class="card" href="https://github.com/Blackphi6/WarnOff" target="_blank" rel="noopener">
+          <div class="name">WarnOff</div>
+          <div class="desc">信頼したアプリのGatekeeper隔離マークを解除するメニューバーツール</div>
+        </a>
+        <a class="card" href="https://github.com/Blackphi6/disk-offload" target="_blank" rel="noopener">
+          <div class="name">Disk Offload</div>
+          <div class="desc">大きなフォルダを外部ストレージへ移動してシンボリックリンク化するmacOSアプリ</div>
+        </a>
+        <a class="card" href="https://github.com/Blackphi6/pause-resume-audio-fade" target="_blank" rel="noopener">
+          <div class="name">Pause Resume Audio Fade</div>
+          <div class="desc">YouTubeの一時停止・再生・シーク時に音をソフトフェードさせるChrome拡張（Mac / Windows / Android版あり）</div>
+        </a>
+        <a class="card" href="https://github.com/Blackphi6/yt-furigana-extension" target="_blank" rel="noopener">
+          <div class="name">YT Furigana Extension</div>
+          <div class="desc">YouTubeの日本語字幕にひらがなルビを表示するChrome拡張機能</div>
+        </a>
+        <a class="card" href="https://github.com/Blackphi6/jump-time-plus" target="_blank" rel="noopener">
+          <div class="name">Jump Time Plus</div>
+          <div class="desc">コロン省略入力に対応したYouTubeタイムコードシーク拡張機能</div>
+        </a>
+        <a class="card" href="https://github.com/Blackphi6/better-japanese-captions" target="_blank" rel="noopener">
+          <div class="name">Better Japanese Captions</div>
+          <div class="desc">YouTubeの日本語字幕の改行をきれいにするChrome拡張機能</div>
+        </a>
+        <a class="card" href="https://github.com/Blackphi6/video-speed-controller-plus" target="_blank" rel="noopener">
+          <div class="name">Video Speed Controller Plus</div>
+          <div class="desc">動画再生速度コントローラーの拡張版（日中英対応）</div>
+        </a>
+      </div>
+    </section>
 
-    // 投稿表示
-    async function renderEntries() {
-      const entries = getEntries();
-      const container = document.getElementById('entries');
-      container.innerHTML = '';
-      for (const [i, entry] of entries.entries()) {
-        const trip = entry.trip ? `<span class="trip">${entry.trip}</span>` : '';
-        container.innerHTML += `
-          <div class="entry">
-            <b>${entry.word}</b> ${trip}<br>
-            <div>${entry.meaning.replace(/\n/g, '<br>')}</div>
-            <div>
-              <span class="like" data-idx="${i}">👍 ${entry.likes || 0}</span>
-              <span style="color:#aaa; font-size:0.8em;">${new Date(entry.date).toLocaleString()}</span>
-            </div>
-          </div>
-        `;
-      }
-      // いいねボタン
-      document.querySelectorAll('.like').forEach(el => {
-        el.onclick = function() {
-          const idx = +el.dataset.idx;
-          const liked = JSON.parse(localStorage.getItem('liked') || '[]');
-          if (liked.includes(idx)) return alert('すでにいいね済みです');
-          entries[idx].likes = (entries[idx].likes || 0) + 1;
-          liked.push(idx);
-          localStorage.setItem('liked', JSON.stringify(liked));
-          saveEntries(entries);
-          renderEntries();
-        };
-      });
-    }
+    <section>
+      <h2>More</h2>
+      <p class="about">
+        その他の作品は<a href="https://github.com/Blackphi6?tab=repositories" target="_blank" rel="noopener" style="color:var(--link)">GitHubの全リポジトリ一覧</a>から見られます。
+      </p>
+    </section>
 
-    // 投稿処理
-    document.getElementById('postForm').onsubmit = async function(e) {
-      e.preventDefault();
-      const word = document.getElementById('word').value.trim();
-      const nameInput = document.getElementById('name').value.trim();
-      const meaning = document.getElementById('meaning').value.trim();
-      let trip = '';
-      let name = '';
-      if (nameInput.includes('#')) {
-        [name, tripKey] = nameInput.split('#', 2);
-        trip = await makeTrip(tripKey);
-      } else {
-        name = nameInput;
-      }
-      const entries = getEntries();
-      entries.unshift({
-        word, meaning, name, trip,
-        date: new Date().toISOString(),
-        likes: 0
-      });
-      saveEntries(entries);
-      document.getElementById('postForm').reset();
-      renderEntries();
-    };
-
-    // 初期表示
-    renderEntries();
-  </script>
+    <footer>
+      © Blackphi6
+    </footer>
+  </div>
 </body>
 </html>
